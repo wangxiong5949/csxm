@@ -1,0 +1,102 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>登入 - layuiAdmin</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/csxm/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="/csxm/layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="/csxm/layuiadmin/style/login.css" media="all">
+</head>
+<body>
+  <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <div class="layadmin-user-login-main">
+      <div class="layadmin-user-login-box layadmin-user-login-header">
+        <h2>layuiAdmin</h2>
+        <p>layui 官方出品的单页面后台管理模板系统</p>
+      </div>
+      <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+          <input type="text" name="userAccount" id="LAY-user-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+          <input type="password" name="userPwd" id="LAY-user-login-password" lay-verify="required" placeholder="密码" class="layui-input">
+        </div>
+        <div class="layui-form-item" style="margin-bottom: 20px;">
+          <a href="forget.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>
+        </div>
+        <div class="layui-form-item">
+          <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit" id="loginUser">登 入</button>
+        </div>
+        <div class="layui-trans layui-form-item layadmin-user-login-other">
+          <label>社交账号登入</label>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+          <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>
+          <a href="reg.html" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="layui-trans layadmin-user-login-footer">
+      <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>
+    </div>
+  </div>
+
+  <script src="/csxm/layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: '/csxm/layuiadmin/'//静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'user'], function(){
+    var $ = layui.$,
+    setter = layui.setter,
+    admin = layui.admin,
+    form = layui.form,
+    router = layui.router(),
+    search = router.search;
+    form.render();
+
+    //回车触发提交
+    document.onkeydown = function (e) {
+        var ev = document.all ? window.event : e;
+        if (ev.keyCode == 13) {
+            $("#loginUser").focus().click();
+        }
+    };
+
+    //提交
+    form.on('submit(LAY-user-login-submit)', function(obj){
+      //请求登入接口
+      admin.req({
+        url: '/csxm/comm/voidLogin', //实际使用请改成服务端真实接口
+        data: obj.field,
+        done: function(r){
+            var sType = r.sType;
+            if(sType == "1"){
+                //登入成功的提示与跳转
+                layer.msg('登入成功', {
+                    icon: 1, time: 1000
+                }, function(){
+                    location.href = '/csxm/toWeb/comm/toIndex'; //后台主页
+                });
+            } else if(sType == "2"){
+                //登入成功的提示与跳转
+                layer.msg('账号或密码错误', {
+                    icon: 2, time: 1000
+                });
+            }
+        }
+      });
+    });
+  });
+  </script>
+</body>
+</html>

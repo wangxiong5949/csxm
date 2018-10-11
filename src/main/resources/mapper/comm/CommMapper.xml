@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csxm.dao.comm.CommDao">
+
+
+
+    <!-- 根据帐号密码查询用户表 -->
+    <select id="findUaData" resultType="com.csxm.entity.UserData" parameterType="map">
+        SELECT
+            user_id userId,
+            role_id roleId
+        FROM eam_user
+        WHERE user_account = #{userAccount}
+        AND user_pwd = #{userPwd}
+    </select>
+
+    <!-- 首页菜单显示（查询角色对应菜单信息） -->
+    <select id="queryEamMenuRoleByRoleId" resultType="map" parameterType="map">
+        SELECT
+        MI.menu_id menuId,
+        MI.menu_name menuName,
+        MI.menu_url menuUrl,
+        MI.menu_f_id menufId,
+        MI.order_num orderNum,
+        MI.menu_icon menuIcon
+        FROM eam_user_role_info URI
+        INNER JOIN eam_user_menurole_link UML ON URI.role_id = UML.role_id
+        INNER JOIN eam_menu_info MI ON MI.menu_id = UML.menu_id
+        WHERE URI.role_id = #{roleId}
+        <if test="menuId != null and '' != menuId">
+            AND MI.menu_f_id = #{menuId}
+        </if>
+        <if test="menuId == null or '' == menuId">
+            AND MI.menu_f_id IS NULL
+        </if>
+        ORDER BY MI.order_num
+    </select>
+
+</mapper>
