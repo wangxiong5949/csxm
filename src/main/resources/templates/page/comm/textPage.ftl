@@ -11,9 +11,13 @@
     <link rel="stylesheet" href="/csxm/layuiadmin/layui/css/layui.css" media="all">
 </head>
 <body>
-    <h1>测试页面</h1>
+    <h1>${hStr}</h1>
 
 
 <script src="/csxm/layuiadmin/layui/layui.js"></script>
+<script>
+    var a = '${hStr}';
+    alert(a)
+</script>
 </body>
 </html>

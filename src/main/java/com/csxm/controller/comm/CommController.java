@@ -1,15 +1,15 @@
 package com.csxm.controller.comm;
 
-import com.csxm.entity.UserData;
-import com.csxm.enums.ReturnCode;
 import com.csxm.service.comm.CommService;
 import com.csxm.util.ResultUtil;
 import com.csxm.util.entity.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @RequestMapping("/comm")
@@ -55,9 +55,10 @@ public class CommController {
      * 测试页面
      */
     @RequestMapping("/toTextPage")
-    public String toTextPage(){
-
-        return "page/comm/textPage";
+    public ModelAndView toTextPage(){
+        Map<String, Object> mData = new HashMap<>();
+        mData.put("hStr","12345600000");
+        return new ModelAndView("page/comm/textPage", mData);
     }
 
 

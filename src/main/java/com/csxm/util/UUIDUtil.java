@@ -1,4 +1,4 @@
-package com.ynfm.util;
+package com.csxm.util;
 
 import java.util.UUID;
 

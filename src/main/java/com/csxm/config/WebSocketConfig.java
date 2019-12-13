@@ -1,4 +1,4 @@
-package com.hybr.config;
+package com.csxm.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 public class WebSocketConfig {
 
     @Bean
-    public ServerEndpointExporter ServerEndpointExporter() {
+    public ServerEndpointExporter voidSee() {
         return new ServerEndpointExporter();
     }
 

@@ -12,6 +12,9 @@
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <script src="/csxm/layuiadmin/layui/layui.js"></script>
 <script>
+var userId = '${wud.userId}';
+var userName = '${wud.userName}';
+
 var layim;
 layui.config({
   version: true
@@ -29,73 +32,7 @@ layui.config({
 
     //获取主面板列表信息
     init: {
-        mine: {
-            "username": "纸飞机1",//我的昵称
-            "id": 123,//我的ID
-            "avatar": "http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg",//我的头像
-            "sign": "懒得签名"
-        },
-        //我的好友列表
-        friend: [
-            {
-                "groupname": "前端码屌",
-                "id": 1,
-                "online": 2,
-                "list": [{
-                    "username": "贤心",
-                    "id": "100001",
-                    "avatar": "http://tp1.sinaimg.cn/1571889140/180/40030060651/1",
-                    "sign": "这些都是测试数据，实际使用请严格按照该格式返回"
-                },{
-                    "username": "Z_子晴",
-                    "id": "108101",
-                    "avatar": "http://tva3.sinaimg.cn/crop.0.0.512.512.180/8693225ajw8f2rt20ptykj20e80e8weu.jpg",
-                    "sign": "微电商达人"
-                }]
-            },
-            {
-                "groupname": "网红",
-                "id": 2,
-                "online": 3,
-                "list": [{
-                    "username": "罗玉凤",
-                    "id": "121286",
-                    "avatar": "http://tp1.sinaimg.cn/1241679004/180/5743814375/0",
-                    "sign": "在自己实力不济的时候，不要去相信什么媒体和记者。他们不是善良的人，有时候候他们的采访对当事人而言就是陷阱"
-                },{
-                    "username": "长泽梓Azusa",
-                    "id": "100001222",
-                    "sign": "我是日本女艺人长泽あずさ",
-                    "avatar": "http://tva1.sinaimg.cn/crop.0.0.180.180.180/86b15b6cjw1e8qgp5bmzyj2050050aa8.jpg"
-                }]
-            },
-            {
-                "groupname": "我心中的女神",
-                "id": 3,
-                "online": 1,
-                "list": [{
-                    "username": "林心如",
-                    "id": "76543",
-                    "avatar": "http://tp3.sinaimg.cn/1223762662/180/5741707953/0",
-                    "sign": "我爱贤心"
-                },{
-                    "username": "佟丽娅",
-                    "id": "4803920",
-                    "avatar": "http://tp4.sinaimg.cn/1345566427/180/5730976522/0",
-                    "sign": "我也爱贤心吖吖啊"
-                }]
-            }
-        ],
-        "group": [{
-            "groupname": "前端群",
-            "id": "101",
-            "avatar": "http://tp2.sinaimg.cn/2211874245/180/40050524279/0"
-        },{
-            "groupname": "Fly社区官方群",
-            "id": "102",
-            "avatar": "http://tp2.sinaimg.cn/5488749285/50/5719808192/1"
-        }]
-
+        ${xxStr}
     },
     
     //扩展聊天面板工具栏
@@ -192,29 +129,17 @@ layui.config({
   
   //监听发送消息
   layim.on('sendMessage', function(data){
-    var To = data.to;
-    //演示自动回复
-    setTimeout(function(){
-      var obj = {};
-      if(To.type === 'group'){
-        obj = {
-          username: '模拟群员'+(Math.random()*100|0),
-          avatar: layui.cache.dir + 'images/face/'+ (Math.random()*72|0) + '.gif',
-          id: To.id,
-          type: 'group',
-          content: autoReplay[Math.random()*9|0]
-        }
-      } else {
-        obj = {
-          username: To.name,
-          avatar: To.avatar,
-          id: To.id,
-          type: To.type,
-          content: autoReplay[Math.random()*9|0]
-        }
-      }
-      layim.getMessage(obj);
-    }, 3000);
+      var To = data.to;
+      var msgChat = data.mine.content;
+      $.ajax({
+          url:"/csxm/wechatChat/voidChat",
+          type:"post",
+          data:{"msgChat":msgChat, "jsUserId":To.id, "userId":userId, "userName":userName},
+          dataType:"json",
+          success:function (r) {
+
+          }
+      });
   });
 
   //监听查看更多记录
@@ -237,7 +162,8 @@ layui.config({
 var websocket = null;
 if ('WebSocket' in window) {
     // websocket = new WebSocket('ws://101.37.75.90:8090/webSocket');
-    websocket = new WebSocket('ws://localhost:8080/webSocket');
+    // websocket = new WebSocket('ws://localhost:8080/webSocket');
+    websocket = new WebSocket('ws://192.168.0.139:8080/webSocket');
 } else {
     alert("不支持");
 }
@@ -255,12 +181,17 @@ websocket.onclose = function (event) {
 //收到消息
 websocket.onmessage = function (event) {
     var user = JSON.parse(event.data);
-    var msgType = user.msgType;
-    if(msgType){
+    //在另一个聊天窗口中选中的聊天对象id
+    var jsUserId = user.jsUserId;
+    //发送人id
+    var fsUserId = user.userId;
+    //发送人名称
+    var fsUserName = user.userName;
+    if(jsUserId == userId){
         layim.getMessage({
-            username: user.userName,
+            username: fsUserName,
             avatar: "http://tp1.sinaimg.cn/1571889140/180/40030060651/1",
-            id: user.fsUserId,
+            id: fsUserId,
             type: "friend",
             cid: Math.random()*100000|0, //模拟消息id，会赋值在li的data-cid上，以便完成一些消息的操作（如撤回），可不填
             content: user.msgChat
@@ -270,7 +201,7 @@ websocket.onmessage = function (event) {
 
 //通讯发生错误
 websocket.onerror = function (event) {
-    alert("websocket通讯发生错误1");
+    alert("websocket通讯发生错误");
 }
 
 //关闭

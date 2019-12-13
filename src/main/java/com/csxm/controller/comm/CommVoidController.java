@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/toWeb/comm")
 @Controller
@@ -36,6 +33,6 @@ public class CommVoidController {
      */
     @RequestMapping("/toIndex")
     public String toIndex(){
-        return  "page/comm/index";
+        return "index.ftl";
     }
 }

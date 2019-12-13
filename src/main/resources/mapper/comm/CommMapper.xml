@@ -8,6 +8,7 @@
     <select id="findUaData" resultType="com.csxm.entity.UserData" parameterType="map">
         SELECT
             user_id userId,
+            user_name userName,
             role_id roleId
         FROM eam_user
         WHERE user_account = #{userAccount}
