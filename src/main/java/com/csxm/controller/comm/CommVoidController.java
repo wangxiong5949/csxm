@@ -25,6 +25,7 @@ public class CommVoidController {
     @RequestMapping("/showIndexMenu")
     @ResponseBody
     public Result showIndexMenu(HttpServletRequest request) throws Exception{
+        System.out.println("1");
         return commService.getEamMenuRoleList(request);
     }
 
